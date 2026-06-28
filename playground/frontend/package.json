@@ -1,0 +1,30 @@
+{
+  "name": "my-better-t-app",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "type": "module",
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "check-types": "turbo check-types",
+    "dev:web": "turbo -F web dev",
+    "check": "ultracite check",
+    "fix": "ultracite fix"
+  },
+  "dependencies": {
+    "@my-better-t-app/env": "workspace:*",
+    "dotenv": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.16",
+    "@my-better-t-app/config": "workspace:*",
+    "turbo": "^2.9.16",
+    "typescript": "catalog:",
+    "ultracite": "7.8.3"
+  },
+  "packageManager": "pnpm@11.6.0"
+}

@@ -1,0 +1,59 @@
+@import "@my-better-t-app/ui/globals.css";
+
+/* Neon Protocol design tokens (np- prefix avoids clashing with shadcn theme) */
+@theme {
+	--color-np-bg: #10141a;
+	--color-np-surface-lowest: #0a0e14;
+	--color-np-surface-low: #181c22;
+	--color-np-surface: #1c2026;
+	--color-np-surface-high: #262a31;
+	--color-np-surface-highest: #31353c;
+	--color-np-on: #dfe2eb;
+	--color-np-on-variant: #bdcaba;
+	--color-np-outline: #889486;
+	--color-np-outline-variant: #3e4a3e;
+	--color-np-primary: #6cdd81;
+	--color-np-on-primary: #003913;
+	--color-np-secondary: #a6e6ff;
+	--color-np-tertiary: #ffb2b8;
+	--color-np-error: #ffb4ab;
+
+	--font-display: "JetBrains Mono", monospace;
+	--font-code: "JetBrains Mono", monospace;
+	--font-label: "Space Mono", monospace;
+	--font-bodynp: "Geist", sans-serif;
+}
+
+/* Effects (no border-radius, neon glows, terminal vibe) */
+.np-glass {
+	background: rgba(10, 14, 20, 0.85);
+	border: 1px solid #3e4a3e;
+	backdrop-filter: blur(12px);
+}
+.np-glow-primary {
+	box-shadow: 0 0 20px rgba(108, 221, 129, 0.15);
+}
+.np-text-glow {
+	text-shadow: 0 0 8px rgba(108, 221, 129, 0.6);
+}
+.np-grid-bg {
+	background-image: radial-gradient(#3e4a3e 1px, transparent 1px);
+	background-size: 24px 24px;
+}
+.np-scanline {
+	background: linear-gradient(
+		to bottom,
+		transparent 0%,
+		rgba(108, 221, 129, 0.05) 50%,
+		transparent 100%
+	);
+	animation: np-scan 8s linear infinite;
+}
+@keyframes np-scan {
+	0% {
+		transform: translateY(-100%);
+	}
+	100% {
+		transform: translateY(100%);
+	}
+}

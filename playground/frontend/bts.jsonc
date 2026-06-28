@@ -1,0 +1,31 @@
+// Better-T-Stack
+//
+// Website: https://www.better-t-stack.dev/
+// Stack Builder: https://www.better-t-stack.dev/new
+// Analytics: https://www.better-t-stack.dev/analytics
+// Showcase: https://www.better-t-stack.dev/showcase
+// Sponsor: https://github.com/sponsors/AmanVarshney01
+//
+// Add new addons with: pnpm dlx create-better-t-stack add
+// This file is safe to delete
+
+{
+  "$schema": "https://r2.better-t-stack.dev/schema.json",
+  "version": "3.34.0",
+  "createdAt": "2026-06-28T10:43:33.224Z",
+  "reproducibleCommand": "pnpm create better-t-stack@latest my-better-t-app --frontend tanstack-router --backend none --runtime none --database none --orm none --api none --auth none --payments none --addons turborepo biome ultracite fumadocs skills mcp --examples none --db-setup none --web-deploy none --server-deploy none --no-git --package-manager pnpm --install",
+  "database": "none",
+  "orm": "none",
+  "backend": "none",
+  "runtime": "none",
+  "frontend": ["tanstack-router"],
+  "addons": ["turborepo", "biome", "ultracite", "fumadocs", "skills", "mcp"],
+  "examples": [],
+  "auth": "none",
+  "payments": "none",
+  "packageManager": "pnpm",
+  "dbSetup": "none",
+  "api": "none",
+  "webDeploy": "none",
+  "serverDeploy": "none",
+}
