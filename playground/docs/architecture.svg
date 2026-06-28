@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="840" viewBox="0 0 1180 840" font-family="-apple-system, Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#444"/>
+    </marker>
+    <marker id="arrowDash" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#8957e5"/>
+    </marker>
+    <marker id="arrowExt" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#888"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1180" height="840" fill="#f6f8fa"/>
+  <text x="40" y="44" font-size="24" font-weight="700" fill="#1f2328">GitHub Profile Collector — AWS 架构</text>
+  <text x="40" y="68" font-size="14" fill="#57606a">全栈 · 无服务器后端 · GitHub Actions(OIDC) 自动部署</text>
+
+  <!-- ===== CI/CD band ===== -->
+  <rect x="40" y="92" width="1100" height="104" rx="8" fill="#faf5ff" stroke="#d8c5f0" stroke-width="1.5"/>
+  <text x="56" y="114" font-size="13" font-weight="700" fill="#8957e5">① CI/CD · 合并 main 自动部署</text>
+
+  <!-- Developer -->
+  <rect x="60" y="128" width="120" height="52" rx="6" fill="#fff" stroke="#8957e5" stroke-width="1.5"/>
+  <text x="120" y="150" font-size="13" font-weight="600" fill="#1f2328" text-anchor="middle">开发者</text>
+  <text x="120" y="168" font-size="11" fill="#57606a" text-anchor="middle">git push</text>
+
+  <!-- GitHub -->
+  <rect x="230" y="128" width="190" height="52" rx="6" fill="#fff" stroke="#8957e5" stroke-width="1.5"/>
+  <text x="325" y="150" font-size="13" font-weight="600" fill="#1f2328" text-anchor="middle">GitHub Repo</text>
+  <text x="325" y="168" font-size="11" fill="#57606a" text-anchor="middle">Adophlidu/aws-learning · main</text>
+
+  <!-- Actions -->
+  <rect x="470" y="128" width="180" height="52" rx="6" fill="#fff" stroke="#8957e5" stroke-width="1.5"/>
+  <text x="560" y="150" font-size="13" font-weight="600" fill="#1f2328" text-anchor="middle">GitHub Actions</text>
+  <text x="560" y="168" font-size="11" fill="#57606a" text-anchor="middle">deploy.yml (build)</text>
+
+  <!-- IAM OIDC -->
+  <rect x="700" y="128" width="190" height="52" rx="6" fill="#fff" stroke="#dd7e09" stroke-width="1.5"/>
+  <text x="795" y="148" font-size="13" font-weight="600" fill="#1f2328" text-anchor="middle">IAM Role · OIDC</text>
+  <text x="795" y="166" font-size="11" fill="#57606a" text-anchor="middle">github-actions-deploy · 临时凭证</text>
+
+  <!-- CI arrows -->
+  <line x1="180" y1="154" x2="226" y2="154" stroke="#444" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="420" y1="154" x2="466" y2="154" stroke="#444" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="650" y1="154" x2="696" y2="154" stroke="#444" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="673" y="146" font-size="10" fill="#8957e5" text-anchor="middle">OIDC</text>
+
+  <!-- ===== AWS region ===== -->
+  <rect x="230" y="232" width="910" height="560" rx="10" fill="#ffffff" stroke="#dd7e09" stroke-width="1.8" stroke-dasharray="7 5"/>
+  <text x="250" y="258" font-size="14" font-weight="700" fill="#dd7e09">AWS  ·  ap-southeast-1 (Singapore)</text>
+
+  <!-- User -->
+  <rect x="55" y="430" width="130" height="74" rx="6" fill="#fff" stroke="#444" stroke-width="1.5"/>
+  <text x="120" y="462" font-size="13" font-weight="600" fill="#1f2328" text-anchor="middle">用户浏览器</text>
+  <text x="120" y="482" font-size="11" fill="#57606a" text-anchor="middle">(公网)</text>
+
+  <!-- Frontend column -->
+  <text x="370" y="300" font-size="12" font-weight="700" fill="#0969da" text-anchor="middle">前端托管</text>
+  <rect x="290" y="312" width="170" height="62" rx="6" fill="#fff" stroke="#0969da" stroke-width="1.5"/>
+  <text x="375" y="338" font-size="13" font-weight="600" fill="#1f2328" text-anchor="middle">CloudFront</text>
+  <text x="375" y="356" font-size="11" fill="#57606a" text-anchor="middle">CDN + HTTPS</text>
+
+  <rect x="290" y="470" width="170" height="62" rx="6" fill="#fff" stroke="#0969da" stroke-width="1.5"/>
+  <text x="375" y="496" font-size="13" font-weight="600" fill="#1f2328" text-anchor="middle">S3</text>
+  <text x="375" y="514" font-size="11" fill="#57606a" text-anchor="middle">前端静态文件 (dist)</text>
+
+  <!-- Backend column -->
+  <text x="650" y="300" font-size="12" font-weight="700" fill="#dd7e09" text-anchor="middle">后端 (无服务器)</text>
+  <rect x="565" y="312" width="180" height="62" rx="6" fill="#fff" stroke="#dd7e09" stroke-width="1.5"/>
+  <text x="655" y="338" font-size="13" font-weight="600" fill="#1f2328" text-anchor="middle">API Gateway</text>
+  <text x="655" y="356" font-size="11" fill="#57606a" text-anchor="middle">HTTP API + CORS</text>
+
+  <rect x="565" y="470" width="180" height="62" rx="6" fill="#fff" stroke="#dd7e09" stroke-width="1.5"/>
+  <text x="655" y="496" font-size="13" font-weight="600" fill="#1f2328" text-anchor="middle">Lambda (Node.js)</text>
+  <text x="655" y="514" font-size="11" fill="#57606a" text-anchor="middle">profile-api</text>
+
+  <rect x="565" y="628" width="180" height="62" rx="6" fill="#fff" stroke="#1a7f37" stroke-width="1.5"/>
+  <text x="655" y="654" font-size="13" font-weight="600" fill="#1f2328" text-anchor="middle">RDS MySQL</text>
+  <text x="655" y="672" font-size="11" fill="#57606a" text-anchor="middle">profile-db</text>
+
+  <!-- GitHub API external -->
+  <rect x="870" y="470" width="180" height="62" rx="6" fill="#f6f8fa" stroke="#888" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="960" y="496" font-size="13" font-weight="600" fill="#1f2328" text-anchor="middle">GitHub API</text>
+  <text x="960" y="514" font-size="11" fill="#57606a" text-anchor="middle">外部 · 取 profile</text>
+
+  <!-- Runtime arrows -->
+  <!-- user -> cloudfront -->
+  <path d="M185 452 L286 360" stroke="#444" stroke-width="1.6" fill="none" marker-end="url(#arrow)"/>
+  <text x="232" y="398" font-size="10" fill="#0969da">加载前端</text>
+  <!-- cloudfront -> s3 -->
+  <line x1="375" y1="374" x2="375" y2="466" stroke="#444" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="385" y="424" font-size="10" fill="#57606a">回源</text>
+  <!-- user -> api gateway -->
+  <path d="M185 484 L561 350" stroke="#444" stroke-width="1.6" fill="none" marker-end="url(#arrow)"/>
+  <text x="360" y="446" font-size="10" fill="#dd7e09">调用 API (fetch)</text>
+  <!-- apigw -> lambda -->
+  <line x1="655" y1="374" x2="655" y2="466" stroke="#444" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <!-- lambda -> rds -->
+  <line x1="655" y1="532" x2="655" y2="624" stroke="#444" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="665" y="582" font-size="10" fill="#1a7f37">读写</text>
+  <!-- lambda -> github api -->
+  <line x1="745" y1="501" x2="866" y2="501" stroke="#888" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arrowExt)"/>
+
+  <!-- Deploy arrows (dashed purple, from IAM role down) -->
+  <path d="M770 182 C700 230, 470 250, 392 466" stroke="#8957e5" stroke-width="1.6" fill="none" stroke-dasharray="6 4" marker-end="url(#arrowDash)"/>
+  <text x="470" y="300" font-size="10" fill="#8957e5">部署前端 → S3</text>
+  <path d="M820 182 C840 300, 720 380, 672 466" stroke="#8957e5" stroke-width="1.6" fill="none" stroke-dasharray="6 4" marker-end="url(#arrowDash)"/>
+  <text x="800" y="300" font-size="10" fill="#8957e5">部署后端 → Lambda</text>
+
+  <!-- ===== Legend ===== -->
+  <line x1="250" y1="760" x2="290" y2="760" stroke="#444" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="298" y="764" font-size="11" fill="#57606a">运行时请求</text>
+  <line x1="420" y1="760" x2="460" y2="760" stroke="#8957e5" stroke-width="1.6" stroke-dasharray="6 4" marker-end="url(#arrowDash)"/>
+  <text x="468" y="764" font-size="11" fill="#57606a">自动部署</text>
+  <line x1="580" y1="760" x2="620" y2="760" stroke="#888" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arrowExt)"/>
+  <text x="628" y="764" font-size="11" fill="#57606a">外部调用</text>
+</svg>
