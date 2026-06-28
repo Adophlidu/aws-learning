@@ -1,0 +1,8 @@
+# Node
+playground/node_modules/
+playground/backend/function.zip
+# frontend
+playground/frontend/dist/
+playground/frontend/.env*
+# OS
+.DS_Store
