@@ -2,7 +2,7 @@ packages:
   - apps/*
   - packages/*
 allowBuilds:
-  esbuild: set this to true or false
+  esbuild: true
   msw: true
 catalog:
   dotenv: ^17.2.2
