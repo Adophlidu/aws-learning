@@ -16,9 +16,9 @@
 
 ## 阶段二：部署一个应用需要的核心服务
 - [x] 4. 计算 Compute：EC2（虚拟机）vs Lambda（无服务器）vs 容器（ECS/Fargate）  ← Lambda 深挖，见 notes/lambda.md
-- [ ] 5. 存储 Storage：S3（对象存储）、EBS（硬盘）
+- [x] 5. 存储 Storage：S3（对象存储，项目中用于前端托管）、EBS（EC2 实操中接触）
 - [x] 6. 网络 Networking：VPC、子网、安全组（Security Group）  ← 深挖，见 notes/vpc-networking.md
-- [ ] 7. 数据库 Database：RDS（关系型）、DynamoDB（NoSQL）
+- [x] 7. 数据库 Database：RDS（关系型，项目中实战）｜ DynamoDB（NoSQL，待学）
 
 ## 阶段三：动手——把一个真实应用部署上线
 - [ ] 8. 实操 A：用 S3 托管一个静态网站
@@ -41,3 +41,4 @@
 | 2026-06-28 | 完成第4、6课(概念) | Lambda 深挖(notes/lambda.md)；网络/VPC 深挖(notes/vpc-networking.md) |
 | 2026-06-28 | 完成实操A | EC2+nginx 部署第一个网站，踩了5个坑(notes/ec2-hands-on.md)，实例已停止 |
 | 2026-06-28 | 完成实操B/C | Lambda+API Gateway 部署无服务器 API(notes/lambda-hands-on.md)，闲置免费保留 |
+| 2026-06-28 | 完成实战项目 | GitHub Profile 收集器全栈上线：S3+CloudFront 前端、API Gateway+Lambda+RDS 后端、GitHub Actions(OIDC) 自动部署。见 playground/ |
