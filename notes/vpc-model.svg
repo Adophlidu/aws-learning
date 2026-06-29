@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="940" viewBox="0 0 1280 940" font-family="-apple-system, Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="aEnd" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#333"/></marker>
+    <marker id="aStart" markerWidth="9" markerHeight="9" refX="2" refY="3" orient="auto"><path d="M7,0 L0,3 L7,6 Z" fill="#333"/></marker>
+    <marker id="aDash" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#8957e5"/></marker>
+  </defs>
+
+  <rect x="0" y="0" width="1280" height="940" fill="#f6f8fa"/>
+  <text x="40" y="42" font-size="23" font-weight="700" fill="#1f2328">VPC 整体网络模型</text>
+  <text x="40" y="66" font-size="13" fill="#57606a">路由表决定公私 · 公网IP 决定能否用 IGW · NACL(子网级) + 安全组(资源级) 双层防火墙</text>
+
+  <!-- Internet -->
+  <rect x="540" y="86" width="200" height="46" rx="23" fill="#eaeef2" stroke="#8c959f" stroke-width="1.5"/>
+  <text x="640" y="114" font-size="14" font-weight="600" fill="#1f2328" text-anchor="middle">Internet (公网)</text>
+
+  <!-- IGW -->
+  <rect x="558" y="158" width="164" height="44" rx="6" fill="#fff5e6" stroke="#dd7e09" stroke-width="2"/>
+  <text x="640" y="185" font-size="13" font-weight="700" fill="#bb6a06" text-anchor="middle">Internet Gateway</text>
+  <line x1="640" y1="132" x2="640" y2="156" stroke="#333" stroke-width="1.8" marker-end="url(#aEnd)" marker-start="url(#aStart)"/>
+
+  <!-- VPC -->
+  <rect x="50" y="220" width="1180" height="660" rx="10" fill="#ffffff" stroke="#dd7e09" stroke-width="1.8" stroke-dasharray="7 5"/>
+  <text x="70" y="246" font-size="15" font-weight="700" fill="#dd7e09">VPC · 10.0.0.0/16</text>
+  <line x1="640" y1="202" x2="640" y2="220" stroke="#333" stroke-width="1.8"/>
+
+  <!-- ===== Public subnet ===== -->
+  <rect x="76" y="266" width="360" height="586" rx="8" fill="#eef9f1" stroke="#1a7f37" stroke-width="1.5"/>
+  <text x="96" y="292" font-size="14" font-weight="700" fill="#1a7f37">公有子网 (10.0.1.0/24)</text>
+  <rect x="92" y="304" width="328" height="26" rx="4" fill="#fff8e6" stroke="#d4a72c" stroke-width="1"/>
+  <text x="100" y="321" font-size="11" fill="#7a5b00">路由表: local + 0.0.0.0/0 → IGW</text>
+  <rect x="92" y="338" width="180" height="24" rx="4" fill="#fdecea" stroke="#cf222e" stroke-width="1"/>
+  <text x="100" y="354" font-size="11" fill="#a40e26">NACL (子网级防火墙)</text>
+
+  <!-- EC2 bastion -->
+  <rect x="100" y="470" width="150" height="96" rx="6" fill="#fff" stroke="#1a7f37" stroke-width="1.5"/>
+  <text x="175" y="500" font-size="13" font-weight="600" fill="#1f2328" text-anchor="middle">EC2</text>
+  <text x="175" y="518" font-size="11" fill="#57606a" text-anchor="middle">跳板机 / Web</text>
+  <rect x="112" y="528" width="64" height="20" rx="10" fill="#dff7e6" stroke="#1a7f37"/><text x="144" y="542" font-size="10" fill="#1a7f37" text-anchor="middle">公网IP</text>
+  <rect x="182" y="528" width="56" height="20" rx="10" fill="#ddeeff" stroke="#0969da"/><text x="210" y="542" font-size="10" fill="#0969da" text-anchor="middle">SG</text>
+
+  <!-- NAT -->
+  <rect x="272" y="470" width="148" height="96" rx="6" fill="#fff" stroke="#dd7e09" stroke-width="1.5"/>
+  <text x="346" y="500" font-size="13" font-weight="600" fill="#1f2328" text-anchor="middle">NAT</text>
+  <text x="346" y="518" font-size="11" fill="#57606a" text-anchor="middle">Gateway / 实例</text>
+  <rect x="314" y="528" width="64" height="20" rx="10" fill="#dff7e6" stroke="#1a7f37"/><text x="346" y="542" font-size="10" fill="#1a7f37" text-anchor="middle">公网IP</text>
+
+  <!-- ===== Private subnet · app ===== -->
+  <rect x="460" y="266" width="360" height="586" rx="8" fill="#eef3fb" stroke="#0969da" stroke-width="1.5"/>
+  <text x="480" y="292" font-size="14" font-weight="700" fill="#0969da">私有子网 · 应用 (10.0.2.0/24)</text>
+  <rect x="476" y="304" width="328" height="26" rx="4" fill="#fff8e6" stroke="#d4a72c" stroke-width="1"/>
+  <text x="484" y="321" font-size="11" fill="#7a5b00">路由表: local + 0.0.0.0/0 → NAT</text>
+  <rect x="476" y="338" width="180" height="24" rx="4" fill="#fdecea" stroke="#cf222e" stroke-width="1"/>
+  <text x="484" y="354" font-size="11" fill="#a40e26">NACL (子网级防火墙)</text>
+
+  <rect x="560" y="478" width="180" height="96" rx="6" fill="#fff" stroke="#0969da" stroke-width="1.5"/>
+  <text x="650" y="508" font-size="13" font-weight="600" fill="#1f2328" text-anchor="middle">Lambda</text>
+  <text x="650" y="526" font-size="11" fill="#57606a" text-anchor="middle">(进 VPC)</text>
+  <rect x="572" y="536" width="64" height="20" rx="10" fill="#eee" stroke="#8c959f"/><text x="604" y="550" font-size="10" fill="#57606a" text-anchor="middle">私有IP</text>
+  <rect x="642" y="536" width="56" height="20" rx="10" fill="#ddeeff" stroke="#0969da"/><text x="670" y="550" font-size="10" fill="#0969da" text-anchor="middle">SG</text>
+
+  <!-- ===== Private subnet · data ===== -->
+  <rect x="844" y="266" width="360" height="586" rx="8" fill="#f3eefb" stroke="#8250df" stroke-width="1.5"/>
+  <text x="864" y="292" font-size="14" font-weight="700" fill="#8250df">私有子网 · 数据 (10.0.3.0/24)</text>
+  <rect x="860" y="304" width="280" height="26" rx="4" fill="#fff8e6" stroke="#d4a72c" stroke-width="1"/>
+  <text x="868" y="321" font-size="11" fill="#7a5b00">路由表: 仅 local (无出网路由)</text>
+  <rect x="860" y="338" width="180" height="24" rx="4" fill="#fdecea" stroke="#cf222e" stroke-width="1"/>
+  <text x="868" y="354" font-size="11" fill="#a40e26">NACL (子网级防火墙)</text>
+
+  <rect x="944" y="478" width="180" height="96" rx="6" fill="#fff" stroke="#8250df" stroke-width="1.5"/>
+  <text x="1034" y="508" font-size="13" font-weight="600" fill="#1f2328" text-anchor="middle">RDS MySQL</text>
+  <text x="1034" y="526" font-size="11" fill="#57606a" text-anchor="middle">数据库</text>
+  <rect x="956" y="536" width="64" height="20" rx="10" fill="#eee" stroke="#8c959f"/><text x="988" y="550" font-size="10" fill="#57606a" text-anchor="middle">私有IP</text>
+  <rect x="1026" y="536" width="56" height="20" rx="10" fill="#ddeeff" stroke="#0969da"/><text x="1054" y="550" font-size="10" fill="#0969da" text-anchor="middle">SG</text>
+  <text x="1034" y="612" font-size="11" font-weight="600" fill="#cf222e" text-anchor="middle">✗ 公网无路径可达</text>
+
+  <!-- ===== Flows ===== -->
+  <!-- IGW <-> EC2 bidirectional -->
+  <path d="M610 200 C440 300, 250 360, 178 466" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#aEnd)" marker-start="url(#aStart)"/>
+  <text x="300" y="392" font-size="11" font-weight="600" fill="#1a7f37">双向 (有公网IP)</text>
+
+  <!-- Lambda outbound -> NAT (dashed) -->
+  <line x1="558" y1="520" x2="424" y2="516" stroke="#8957e5" stroke-width="1.8" stroke-dasharray="6 4" marker-end="url(#aDash)"/>
+  <text x="430" y="500" font-size="11" fill="#8957e5">① 出站 → NAT</text>
+  <!-- NAT -> IGW (dashed up) -->
+  <path d="M390 466 C470 320, 600 250, 648 204" fill="none" stroke="#8957e5" stroke-width="1.8" stroke-dasharray="6 4" marker-end="url(#aDash)"/>
+  <text x="486" y="316" font-size="11" fill="#8957e5">② → IGW → 公网 (只出不进)</text>
+
+  <!-- Lambda <-> RDS internal -->
+  <line x1="742" y1="540" x2="942" y2="540" stroke="#333" stroke-width="1.8" marker-end="url(#aEnd)" marker-start="url(#aStart)"/>
+  <text x="842" y="532" font-size="11" font-weight="600" fill="#8250df" text-anchor="middle">VPC 内网直连 (local)</text>
+
+  <!-- ===== Legend ===== -->
+  <rect x="76" y="640" width="744" height="196" rx="8" fill="#ffffff" stroke="#d0d7de" stroke-width="1"/>
+  <text x="96" y="668" font-size="13" font-weight="700" fill="#1f2328">图例 / 四层网络模型</text>
+
+  <line x1="100" y1="694" x2="150" y2="694" stroke="#333" stroke-width="1.8" marker-end="url(#aEnd)" marker-start="url(#aStart)"/>
+  <text x="160" y="698" font-size="12" fill="#57606a">双向通信（资源有公网IP + 安全组放行）</text>
+  <line x1="100" y1="722" x2="150" y2="722" stroke="#8957e5" stroke-width="1.8" stroke-dasharray="6 4" marker-end="url(#aDash)"/>
+  <text x="160" y="726" font-size="12" fill="#57606a">单向出网（私有子网经 NAT，只出不进）</text>
+
+  <rect x="100" y="744" width="46" height="20" rx="4" fill="#fff8e6" stroke="#d4a72c"/><text x="123" y="758" font-size="10" fill="#7a5b00" text-anchor="middle">路由表</text>
+  <text x="160" y="758" font-size="12" fill="#57606a">决定流量去向 → 公私之分、能否出网</text>
+
+  <rect x="100" y="772" width="46" height="20" rx="4" fill="#fdecea" stroke="#cf222e"/><text x="123" y="786" font-size="10" fill="#a40e26" text-anchor="middle">NACL</text>
+  <text x="160" y="786" font-size="12" fill="#57606a">子网级防火墙（无状态、可拒绝、通常默认放行）</text>
+
+  <rect x="100" y="800" width="46" height="20" rx="10" fill="#ddeeff" stroke="#0969da"/><text x="123" y="814" font-size="10" fill="#0969da" text-anchor="middle">SG</text>
+  <text x="160" y="814" font-size="12" fill="#57606a">资源级安全组（有状态、只允许、细粒度，主力把关）</text>
+
+  <text x="540" y="698" font-size="12" fill="#57606a">数据包进入顺序：</text>
+  <text x="540" y="722" font-size="12" font-weight="600" fill="#1f2328">IGW → NACL(子网) → 安全组(资源) → 到达资源</text>
+  <text x="540" y="752" font-size="12" fill="#57606a">关键点：</text>
+  <text x="540" y="774" font-size="11.5" fill="#1f2328">• Lambda 进 VPC 只有私有IP → 出网必须经 NAT</text>
+  <text x="540" y="794" font-size="11.5" fill="#1f2328">• 但「被触发」走 AWS API，不受 IP 影响</text>
+  <text x="540" y="814" font-size="11.5" fill="#1f2328">• NAT 必须放在公有子网，靠 IGW 上网</text>
+</svg>
