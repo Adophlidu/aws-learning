@@ -60,7 +60,10 @@ resource "aws_apigatewayv2_integration" "bff" {
 }
 
 resource "aws_apigatewayv2_route" "routes" {
-  for_each  = toset(["POST /profiles", "GET /profiles", "GET /profiles/{id}"])
+  for_each = toset([
+    "POST /profiles", "GET /profiles", "GET /profiles/{id}",
+    "GET /stats/{gid}", "GET /repos/{gid}", "GET /leaderboard"
+  ])
   api_id    = aws_apigatewayv2_api.bff.id
   route_key = each.value
   target    = "integrations/${aws_apigatewayv2_integration.bff.id}"

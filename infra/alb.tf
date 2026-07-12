@@ -60,7 +60,7 @@ resource "aws_lb_listener_rule" "stats" {
   }
   condition {
     path_pattern {
-      values = ["/leaderboard*", "/*/repos", "/*/stats"]
+      values = ["/leaderboard*", "/repos/*", "/stats/*", "/collect"]
     }
   }
 }
