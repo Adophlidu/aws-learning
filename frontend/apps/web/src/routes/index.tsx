@@ -39,7 +39,7 @@ function HomeComponent() {
 		setSubmitting(true);
 		try {
 			const profile = await submitToken(token.trim());
-			toast.success(`SCAN_COMPLETE // @${profile.login}`);
+			toast.success(`扫描完成 // @${profile.login}`);
 			setToken("");
 			await refresh();
 		} catch (err) {
@@ -56,11 +56,11 @@ function HomeComponent() {
 				<header className="mb-12">
 					<div className="mb-4 inline-block border-np-primary border-l-2 bg-np-primary/10 px-3 py-1">
 						<span className="font-label text-[11px] text-np-primary uppercase tracking-widest">
-							System Status: Operational
+							系统状态：运行中
 						</span>
 					</div>
 					<h1 className="np-text-glow mb-2 font-display font-extrabold text-5xl text-np-primary tracking-tight">
-						TOKEN_SCANNER_V2
+						令牌扫描器
 					</h1>
 					<p className="max-w-2xl text-np-on-variant">
 						高性能 GitHub access token 扫描与收录套件。输入
@@ -89,7 +89,7 @@ function HomeComponent() {
 								className="mb-3 block font-label text-[11px] text-np-primary/70 uppercase tracking-widest"
 								htmlFor="token"
 							>
-								Input GitHub Access Token
+								输入 GitHub 访问令牌
 							</label>
 							<div className="relative flex items-center">
 								<span className="absolute left-4 font-code text-np-primary">
@@ -111,7 +111,7 @@ function HomeComponent() {
 							type="submit"
 						>
 							<TerminalSquare className="size-5" />
-							{submitting ? "SCANNING..." : "EXECUTE_SCAN"}
+							{submitting ? "扫描中..." : "开始扫描"}
 						</button>
 					</form>
 				</section>
@@ -121,21 +121,21 @@ function HomeComponent() {
 						<div className="flex items-center gap-3">
 							<History className="size-5 text-np-secondary" />
 							<h2 className="font-display text-np-on text-xl uppercase tracking-tight">
-								Collected Profiles
+								已收录档案
 							</h2>
 						</div>
 						<div className="flex items-center gap-2 border border-np-outline-variant bg-np-surface px-3 py-1 font-label text-[11px] text-np-on-variant uppercase">
 							<Users className="size-3" />
-							{profiles.length} ARCHIVED
+							已归档 {profiles.length}
 						</div>
 					</div>
 
 					{loading && (
-						<p className="font-code text-np-on-variant text-sm">LOADING...</p>
+						<p className="font-code text-np-on-variant text-sm">加载中...</p>
 					)}
 					{!loading && profiles.length === 0 && (
 						<p className="font-code text-np-on-variant text-sm">
-							{"NO_RECORDS // 提交一个 token 开始扫描。"}
+							{"暂无记录 // 提交一个 token 开始扫描。"}
 						</p>
 					)}
 					{!loading && profiles.length > 0 && (
@@ -171,7 +171,7 @@ function HomeComponent() {
 									<div className="mb-4 space-y-2">
 										<div className="flex justify-between">
 											<span className="font-label text-[11px] text-np-on-variant uppercase">
-												Public Repos
+												公开仓库
 											</span>
 											<span className="font-code text-np-on text-xs">
 												{p.public_repos}
@@ -179,7 +179,7 @@ function HomeComponent() {
 										</div>
 										<div className="flex justify-between">
 											<span className="font-label text-[11px] text-np-on-variant uppercase">
-												Followers
+												关注者
 											</span>
 											<span className="font-code text-np-on text-xs">
 												{p.followers}
@@ -187,7 +187,7 @@ function HomeComponent() {
 										</div>
 									</div>
 									<div className="flex items-center justify-center gap-1 border border-np-outline-variant py-1 font-label text-[11px] text-np-on-variant uppercase transition-all group-hover:border-np-primary group-hover:text-np-primary">
-										View Full Report
+										查看完整档案
 										<ChevronRight className="size-3" />
 									</div>
 								</Link>

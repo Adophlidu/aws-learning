@@ -17,11 +17,11 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
 	head: () => ({
 		meta: [
 			{
-				title: "GH_COMMAND_CENTER",
+				title: "GH 指挥中心",
 			},
 			{
 				name: "description",
-				content: "GitHub Profile collector — cyberpunk command center",
+				content: "GitHub 档案收集器 —— 赛博朋克指挥中心",
 			},
 		],
 		links: [

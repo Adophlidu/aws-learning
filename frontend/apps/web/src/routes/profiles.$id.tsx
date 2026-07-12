@@ -76,12 +76,12 @@ function DetailComponent() {
 			<main className="mx-auto max-w-[1200px] px-4 pt-24 pb-12 md:px-8">
 				{loading && (
 					<p className="font-code text-np-on-variant text-sm">
-						DECRYPTING_RECORD...
+						正在解密档案...
 					</p>
 				)}
 				{error && !loading && (
 					<div className="border border-np-error/40 bg-np-error/10 p-6 font-code text-np-error">
-						{`ERROR // ${error}`}
+						{`错误 // ${error}`}
 					</div>
 				)}
 				{profile && !loading && (
@@ -115,20 +115,20 @@ function DetailComponent() {
 											{profile.name || profile.login}
 										</h1>
 										<p className="max-w-2xl text-np-on-variant">
-											{profile.bio || "No bio on record."}
+											{profile.bio || "暂无简介。"}
 										</p>
 									</div>
 									<div className="grid grid-cols-1 gap-4 pt-4 sm:grid-cols-3">
 										<div className="group border border-np-outline-variant bg-np-surface-low p-4 transition-colors hover:border-np-primary">
-											<div className={STAT_LABEL}>Public Repos</div>
+											<div className={STAT_LABEL}>公开仓库</div>
 											<div className={STAT_VALUE}>{profile.public_repos}</div>
 										</div>
 										<div className="group border border-np-outline-variant bg-np-surface-low p-4 transition-colors hover:border-np-primary">
-											<div className={STAT_LABEL}>Followers</div>
+											<div className={STAT_LABEL}>关注者</div>
 											<div className={STAT_VALUE}>{profile.followers}</div>
 										</div>
 										<div className="group border border-np-outline-variant bg-np-surface-low p-4 transition-colors hover:border-np-primary">
-											<div className={STAT_LABEL}>Following</div>
+											<div className={STAT_LABEL}>正在关注</div>
 											<div className={STAT_VALUE}>{profile.following}</div>
 										</div>
 									</div>
@@ -144,23 +144,23 @@ function DetailComponent() {
 							<div className="flex items-center justify-between border-np-outline-variant border-b pb-2">
 								<h2 className="flex items-center gap-2 font-display text-np-secondary text-xl">
 									<UserCheck className="size-5" />
-									SYSTEM_RECORD
+									系统档案
 								</h2>
 							</div>
 							<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 								<MetaPacket
 									icon={<Building2 className="size-4" />}
-									label="Company"
+									label="公司"
 									value={profile.company || "—"}
 								/>
 								<MetaPacket
 									icon={<MapPin className="size-4" />}
-									label="Location"
+									label="地区"
 									value={profile.location || "—"}
 								/>
 								<MetaPacket
 									icon={<Calendar className="size-4" />}
-									label="GitHub Joined"
+									label="加入 GitHub"
 									value={formatDate(profile.github_created_at)}
 								/>
 								<MetaPacket
@@ -185,15 +185,15 @@ function LanguageStats({ stats }: { stats: LangStat[] }) {
 			<div className="flex items-center justify-between border-np-outline-variant border-b pb-2">
 				<h2 className="flex items-center gap-2 font-display text-np-secondary text-xl">
 					<Code2 className="size-5" />
-					LANGUAGE_DISTRIBUTION
+					语言分布
 				</h2>
 				<span className="font-label text-[11px] text-np-on-variant uppercase">
-					{stats.length} LANGS
+					{stats.length} 种语言
 				</span>
 			</div>
 			{stats.length === 0 ? (
 				<p className="font-code text-np-on-variant text-sm">
-					{"NO_STATS // 该用户仓库未采集或无语言信息。"}
+					{"暂无统计 // 该用户仓库未采集或无语言信息。"}
 				</p>
 			) : (
 				<div className="space-y-3">
@@ -233,15 +233,15 @@ function RepoTable({ repos }: { repos: RepoStat[] }) {
 			<div className="flex items-center justify-between border-np-outline-variant border-b pb-2">
 				<h2 className="flex items-center gap-2 font-display text-np-secondary text-xl">
 					<FolderGit2 className="size-5" />
-					TOP_REPOSITORIES
+					热门仓库
 				</h2>
 				<span className="font-label text-[11px] text-np-on-variant uppercase">
-					{repos.length} REPOS
+					{repos.length} 个仓库
 				</span>
 			</div>
 			{repos.length === 0 ? (
 				<p className="font-code text-np-on-variant text-sm">
-					{"NO_REPOS // 无已采集仓库。"}
+					{"暂无仓库 // 无已采集仓库。"}
 				</p>
 			) : (
 				<div className="divide-y divide-np-outline-variant border border-np-outline-variant">

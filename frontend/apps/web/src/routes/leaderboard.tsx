@@ -15,8 +15,8 @@ export const Route = createFileRoute("/leaderboard")({
 });
 
 const TABS: { by: LeaderboardBy; icon: typeof Star; label: string }[] = [
-	{ by: "stars", icon: Star, label: "BY_STARS" },
-	{ by: "repos", icon: FolderGit2, label: "BY_REPOS" },
+	{ by: "stars", icon: Star, label: "按 Star" },
+	{ by: "repos", icon: FolderGit2, label: "按仓库数" },
 ];
 
 function LeaderboardComponent() {
@@ -46,12 +46,12 @@ function LeaderboardComponent() {
 				<header className="mb-8">
 					<div className="mb-4 inline-block border-np-primary border-l-2 bg-np-primary/10 px-3 py-1">
 						<span className="font-label text-[11px] text-np-primary uppercase tracking-widest">
-							Ranking Engine
+							排行引擎
 						</span>
 					</div>
 					<h1 className="np-text-glow mb-2 flex items-center gap-3 font-display font-extrabold text-4xl text-np-primary tracking-tight">
 						<Trophy className="size-8" />
-						LEADERBOARD
+						排行榜
 					</h1>
 					<p className="max-w-2xl text-np-on-variant">
 						按已采集仓库聚合的 star / repo 排行。展示信息由 stats-service 经
@@ -81,11 +81,11 @@ function LeaderboardComponent() {
 				</div>
 
 				{loading && (
-					<p className="font-code text-np-on-variant text-sm">RANKING...</p>
+					<p className="font-code text-np-on-variant text-sm">加载中...</p>
 				)}
 				{!loading && entries.length === 0 && (
 					<p className="font-code text-np-on-variant text-sm">
-						{"NO_DATA // 尚无采集数据。"}
+						{"暂无数据 // 尚无采集数据。"}
 					</p>
 				)}
 				{!loading && entries.length > 0 && (
@@ -125,7 +125,7 @@ function LeaderboardComponent() {
 											{e.total_stars}
 										</div>
 										<div className="font-label text-[10px] text-np-on-variant uppercase">
-											Stars
+											Star 数
 										</div>
 									</div>
 									<div className="text-right">
@@ -133,7 +133,7 @@ function LeaderboardComponent() {
 											{e.total_repos}
 										</div>
 										<div className="font-label text-[10px] text-np-on-variant uppercase">
-											Repos
+											仓库数
 										</div>
 									</div>
 								</div>
