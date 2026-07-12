@@ -1,0 +1,26 @@
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpw
+      MYSQL_DATABASE: profiles_app
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: apppw
+    ports: ["3307:3306"]
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-prootpw"]
+      interval: 3s
+      retries: 20
+  app:
+    build: .
+    environment:
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_USER: appuser
+      DB_PASSWORD: apppw
+      DB_NAME: profiles_app
+      PROFILE_SVC_URL: http://localhost:9999
+    ports: ["8081:8080"]
+    depends_on:
+      db:
+        condition: service_healthy
