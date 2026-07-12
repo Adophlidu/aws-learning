@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 type Handler struct{ store *Store }
@@ -76,4 +77,27 @@ func (h *Handler) GetProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, 200, p)
+}
+
+// InternalList: 按 github_ids 批量查（供 stats-service 经 Cloud Map 调用）
+func (h *Handler) InternalList(w http.ResponseWriter, r *http.Request) {
+	raw := r.URL.Query().Get("github_ids")
+	var ids []int64
+	for _, p := range strings.Split(raw, ",") {
+		if p == "" {
+			continue
+		}
+		if id, err := strconv.ParseInt(p, 10, 64); err == nil {
+			ids = append(ids, id)
+		}
+	}
+	list, err := h.store.ListByGithubIDs(ids)
+	if err != nil {
+		writeJSON(w, 500, map[string]string{"error": "db error"})
+		return
+	}
+	if list == nil {
+		list = []Profile{}
+	}
+	writeJSON(w, 200, list)
 }

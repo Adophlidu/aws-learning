@@ -143,3 +143,17 @@ func (s *Store) query(q string, args ...any) ([]Profile, error) {
 	}
 	return out, rows.Err()
 }
+
+// ListByGithubIDs 按 github_id 批量查（供 stats-service 经 Cloud Map 调用）
+func (s *Store) ListByGithubIDs(ids []int64) ([]Profile, error) {
+	if len(ids) == 0 {
+		return []Profile{}, nil
+	}
+	placeholders := "?"
+	args := []any{ids[0]}
+	for _, id := range ids[1:] {
+		placeholders += ",?"
+		args = append(args, id)
+	}
+	return s.query("SELECT * FROM profiles WHERE github_id IN ("+placeholders+")", args...)
+}

@@ -32,6 +32,7 @@ func main() {
 	mux.HandleFunc("POST /profiles", h.CreateProfile)
 	mux.HandleFunc("GET /profiles", h.ListProfiles)
 	mux.HandleFunc("GET /profiles/{id}", h.GetProfile)
+	mux.HandleFunc("GET /internal/profiles", h.InternalList)
 
 	log.Println("profile-service listening on :8080")
 	log.Fatal(http.ListenAndServe(":8080", mux))
