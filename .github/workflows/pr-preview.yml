@@ -71,11 +71,11 @@ jobs:
       - name: Comment preview URL
         env:
           GH_TOKEN: ${{ github.token }}
-          URL: ${{ vars.FRONTEND_URL }}/pr-${{ github.event.number }}/index.html
+          URL: ${{ vars.FRONTEND_URL }}/pr-${{ github.event.number }}/
         run: |
           gh pr comment "$PR" --body "🔎 前端预览（指向 test 后端）：$URL
 
-          > 注：客户端深链路由的 basepath 未注入，落地页可预览、深链为已知限制。"
+          > 请用带尾斜杠的 /pr-N/ 访问（CloudFront Function + router basepath 已对齐子路径路由）。"
 
   infra-check:
     needs: changes
