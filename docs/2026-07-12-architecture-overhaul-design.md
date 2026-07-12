@@ -182,6 +182,9 @@ on: PR closed     → 清理 pr-N/ 前缀
 
 ## 8. 实施阶段（供实现计划展开）
 
+> **进度（截至 2026-07-12）**：✅ Plan 1 基础设施（specs/2026-07-12-phase1-infra-plan.md，已 apply/验证/destroy）｜✅ Plan 2 profile-service+BFF+APIGW 南北向（phase2 plan，端到端通电验证过）｜✅ Plan 3 stats-service+Cloud Map 东西向（phase3 plan，榜单跨服务验证过）｜⬜ **下一步 Plan 4 前端新页面** ｜⬜ Plan 5 CI/CD。
+> 恢复执行：说"继续 Plan 4"即可；设计阶段 2+3 已合并进 Plan 2 实施。
+
 1. **基础设施基线（Terraform）**：network、私网 RDS、ECR×2、ALB、Cloud Map、ECS 集群、OIDC/IAM。
 2. **profile-service(Go)**：把现有 profile CRUD + 搜索移植为 Go 服务，跑 Fargate、挂 ALB；RDS 私网化；Lambda 改为经 ALB 调它。
 3. **Lambda BFF 重构**：从"直连 DB"改为"纯编排"，调 profile-service。
