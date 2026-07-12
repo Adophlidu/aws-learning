@@ -1,0 +1,46 @@
+# production 分支 → 部署 prod 环境。
+# prod 的 GitHub Environment 配 required reviewers → 每个 deploy job 前强制人工审批。
+name: deploy-prod
+
+on:
+  push:
+    branches: [production]
+    paths:
+      - "services/**"
+      - "bff/**"
+      - "frontend/**"
+      - ".github/workflows/**"
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      services: ${{ steps.filter.outputs.services }}
+      bff: ${{ steps.filter.outputs.bff }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            services:
+              - 'services/**'
+            bff:
+              - 'bff/**'
+            frontend:
+              - 'frontend/**'
+
+  deploy:
+    needs: changes
+    uses: ./.github/workflows/_deploy.yml
+    with:
+      environment: prod
+      deploy_services: ${{ needs.changes.outputs.services == 'true' }}
+      deploy_bff: ${{ needs.changes.outputs.bff == 'true' }}
+      deploy_frontend: ${{ needs.changes.outputs.frontend == 'true' }}
+    secrets: inherit

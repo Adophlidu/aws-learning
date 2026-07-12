@@ -1,0 +1,113 @@
+# 可复用部署工作流：被 deploy-test / deploy-prod 调用。
+# 三块可独立开关（services / bff / frontend），全部走 GitHub OIDC 免密钥。
+# 每个 job 声明 environment → 触发该环境的保护规则（prod 需人工审批）并读取该环境的 Variables。
+name: _deploy
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: "目标环境（test / prod），也是 GitHub Environment 名"
+        required: true
+        type: string
+      deploy_services:
+        required: true
+        type: boolean
+      deploy_bff:
+        required: true
+        type: boolean
+      deploy_frontend:
+        required: true
+        type: boolean
+
+permissions:
+  id-token: write # OIDC
+  contents: read
+
+env:
+  AWS_REGION: ap-southeast-1
+
+jobs:
+  # 两个 Go 服务：build → 推 ECR（:latest + :sha）→ 滚动更新 ECS
+  services:
+    if: ${{ inputs.deploy_services }}
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    strategy:
+      matrix:
+        svc: [profile, stats]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+      - uses: aws-actions/amazon-ecr-login@v2
+      - name: Build & push image
+        run: |
+          REPO="${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ vars.NAME_PREFIX }}-${{ matrix.svc }}-service"
+          docker build --platform linux/amd64 \
+            -t "$REPO:latest" -t "$REPO:${{ github.sha }}" \
+            services/${{ matrix.svc }}-service
+          docker push "$REPO:latest"
+          docker push "$REPO:${{ github.sha }}"
+      - name: Roll ECS service
+        run: |
+          aws ecs update-service \
+            --cluster "${{ vars.NAME_PREFIX }}-cluster" \
+            --service "${{ vars.NAME_PREFIX }}-${{ matrix.svc }}" \
+            --force-new-deployment
+
+  # BFF（Node Lambda）：zip → 更新函数代码
+  bff:
+    if: ${{ inputs.deploy_bff }}
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Zip & update Lambda
+        run: |
+          cd bff && zip -r ../bff.zip index.mjs package.json
+          cd ..
+          aws lambda update-function-code \
+            --function-name "${{ vars.NAME_PREFIX }}-bff" \
+            --zip-file fileb://bff.zip
+
+  # 前端：build（注入该环境 API URL）→ 同步 S3 → CloudFront 失效
+  frontend:
+    if: ${{ inputs.deploy_frontend }}
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    env:
+      VITE_API_URL: ${{ vars.VITE_API_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: frontend/package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+      - name: Build web
+        working-directory: frontend
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm -F web build
+      - name: Sync to S3
+        run: |
+          aws s3 sync frontend/apps/web/dist "s3://${{ vars.FRONTEND_BUCKET }}" --delete
+      - name: Invalidate CloudFront
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${{ vars.CLOUDFRONT_ID }}" \
+            --paths "/*"

@@ -4,5 +4,11 @@ backend/function.zip
 # frontend
 frontend/dist/
 frontend/.env*
+# terraform / build artifacts
+infra/.terraform/
+infra/*.tfstate*
+infra/bff.zip
+services/*/profile-service
+services/*/stats-service
 # OS
 .DS_Store

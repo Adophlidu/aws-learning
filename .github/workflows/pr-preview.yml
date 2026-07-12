@@ -1,0 +1,102 @@
+# PR 预览（纯前端）+ infra 校验门。
+# - 前端有改动：构建到 /pr-N/ 前缀传共享 test 桶，评论预览 URL（指向 test 后端）。
+# - infra 有改动：terraform fmt/validate 校验（不 apply，无需凭证）。
+# - PR 关闭：清理 pr-N/ 前缀。
+name: pr-preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+
+permissions:
+  id-token: write # 前端预览走 OIDC
+  contents: read
+  pull-requests: write # 评论预览链接
+
+env:
+  AWS_REGION: ap-southeast-1
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      frontend: ${{ steps.filter.outputs.frontend }}
+      infra: ${{ steps.filter.outputs.infra }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            frontend:
+              - 'frontend/**'
+            infra:
+              - 'infra/**'
+
+  preview:
+    needs: changes
+    if: ${{ needs.changes.outputs.frontend == 'true' && github.event.action != 'closed' }}
+    runs-on: ubuntu-latest
+    environment: test
+    env:
+      VITE_API_URL: ${{ vars.VITE_API_URL }}
+      PR: ${{ github.event.number }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: frontend/package.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+      - name: Build web (with /pr-N/ base)
+        working-directory: frontend
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm --filter web exec vite build --base="/pr-${PR}/"
+      - name: Sync to preview prefix
+        run: |
+          aws s3 sync frontend/apps/web/dist "s3://${{ vars.FRONTEND_BUCKET }}/pr-${PR}/" --delete
+      - name: Comment preview URL
+        env:
+          GH_TOKEN: ${{ github.token }}
+          URL: ${{ vars.FRONTEND_URL }}/pr-${{ github.event.number }}/index.html
+        run: |
+          gh pr comment "$PR" --body "🔎 前端预览（指向 test 后端）：$URL
+
+          > 注：客户端深链路由的 basepath 未注入，落地页可预览、深链为已知限制。"
+
+  infra-check:
+    needs: changes
+    if: ${{ needs.changes.outputs.infra == 'true' && github.event.action != 'closed' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - name: Validate (no apply, no creds)
+        working-directory: infra
+        run: |
+          terraform fmt -check -recursive
+          terraform init -backend=false -input=false
+          terraform validate
+
+  cleanup:
+    if: ${{ github.event.action == 'closed' }}
+    runs-on: ubuntu-latest
+    environment: test
+    env:
+      PR: ${{ github.event.number }}
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Remove preview prefix
+        run: |
+          aws s3 rm "s3://${{ vars.FRONTEND_BUCKET }}/pr-${PR}/" --recursive

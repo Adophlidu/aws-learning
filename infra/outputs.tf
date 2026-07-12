@@ -8,3 +8,6 @@ output "cloudmap_namespace_id" { value = aws_service_discovery_private_dns_names
 output "ecs_cluster_name" { value = aws_ecs_cluster.main.name }
 output "deploy_role_arn" { value = aws_iam_role.deploy.arn }
 output "db_secret_arn" { value = aws_secretsmanager_secret.db.arn }
+output "frontend_bucket" { value = aws_s3_bucket.frontend.id }
+output "cloudfront_id" { value = aws_cloudfront_distribution.frontend.id }
+output "cloudfront_domain" { value = "https://${aws_cloudfront_distribution.frontend.domain_name}" }

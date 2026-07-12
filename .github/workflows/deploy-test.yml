@@ -1,0 +1,45 @@
+# main 分支 → 自动部署 test 环境。按路径分流：只部署实际改动的那块。
+name: deploy-test
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "services/**"
+      - "bff/**"
+      - "frontend/**"
+      - ".github/workflows/**"
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      services: ${{ steps.filter.outputs.services }}
+      bff: ${{ steps.filter.outputs.bff }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            services:
+              - 'services/**'
+            bff:
+              - 'bff/**'
+            frontend:
+              - 'frontend/**'
+
+  deploy:
+    needs: changes
+    uses: ./.github/workflows/_deploy.yml
+    with:
+      environment: test
+      deploy_services: ${{ needs.changes.outputs.services == 'true' }}
+      deploy_bff: ${{ needs.changes.outputs.bff == 'true' }}
+      deploy_frontend: ${{ needs.changes.outputs.frontend == 'true' }}
+    secrets: inherit
