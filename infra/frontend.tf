@@ -24,6 +24,37 @@ resource "aws_cloudfront_origin_access_control" "frontend" {
   signing_protocol                  = "sigv4"
 }
 
+# CloudFront Function（viewer-request）：SPA 子目录路由重写。
+# S3 只存实体文件，客户端路由路径（/leaderboard、/pr-1/search…）在 S3 里没有对应对象，
+# 这里在边缘把「非文件请求」重写到对应的 index.html，让前端路由接管。
+resource "aws_cloudfront_function" "spa_router" {
+  name    = "${local.name_prefix}-spa-router"
+  runtime = "cloudfront-js-2.0"
+  comment = "SPA 路由重写：/pr-N/* → /pr-N/index.html；根非文件 → /index.html"
+  publish = true
+  code    = <<-EOT
+    function handler(event) {
+      var req = event.request;
+      var uri = req.uri;
+      var lastSeg = uri.substring(uri.lastIndexOf('/') + 1);
+      // 带扩展名的静态资源（.js/.css/.png/index.html…）直接放行
+      if (lastSeg.indexOf('.') !== -1) {
+        return req;
+      }
+      // /pr-N/... 预览前缀：重写到该前缀下的 index.html
+      if (uri.indexOf('/pr-') === 0) {
+        var second = uri.indexOf('/', 1);
+        var prefix = second === -1 ? uri : uri.substring(0, second);
+        req.uri = prefix + '/index.html';
+        return req;
+      }
+      // 根 SPA 路由
+      req.uri = '/index.html';
+      return req;
+    }
+  EOT
+}
+
 resource "aws_cloudfront_distribution" "frontend" {
   enabled             = true
   default_root_object = "index.html"
@@ -42,6 +73,11 @@ resource "aws_cloudfront_distribution" "frontend" {
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD"]
     compress               = true
+
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.spa_router.arn
+    }
 
     forwarded_values {
       query_string = false

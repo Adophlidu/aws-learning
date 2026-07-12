@@ -9,6 +9,12 @@ resource "aws_service_discovery_service" "profile" {
     routing_policy = "MULTIVALUE"
   }
   health_check_custom_config {}
+
+  lifecycle {
+    # provider 对空 health_check_custom_config 有已知的永久 diff（强制替换）。
+    # 该块创建后不会变，忽略其漂移，避免误替换（替换需先注销 ECS 实例，会中断服务）。
+    ignore_changes = [health_check_custom_config]
+  }
 }
 
 resource "aws_ecs_task_definition" "profile" {

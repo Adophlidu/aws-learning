@@ -79,12 +79,12 @@ function SearchComponent() {
 				<header className="mb-8">
 					<div className="mb-4 inline-block border-np-primary border-l-2 bg-np-primary/10 px-3 py-1">
 						<span className="font-label text-[11px] text-np-primary uppercase tracking-widest">
-							Query Engine
+							查询引擎
 						</span>
 					</div>
 					<h1 className="np-text-glow mb-2 flex items-center gap-3 font-display font-extrabold text-4xl text-np-primary tracking-tight">
 						<SearchIcon className="size-8" />
-						SEARCH_ARCHIVE
+						搜索档案
 					</h1>
 					<p className="max-w-2xl text-np-on-variant">
 						按 login/name 关键词、地区、最小关注数筛选已收录档案。
@@ -100,7 +100,7 @@ function SearchComponent() {
 							className="mb-2 block font-label text-[11px] text-np-primary/70 uppercase tracking-widest"
 							htmlFor="q"
 						>
-							Keyword
+							关键词
 						</label>
 						<input
 							className="w-full border-np-outline border-b-2 bg-np-surface-lowest px-3 py-2 font-code text-np-secondary placeholder:text-np-on-variant/30 focus:border-np-secondary focus:outline-none"
@@ -115,7 +115,7 @@ function SearchComponent() {
 							className="mb-2 block font-label text-[11px] text-np-primary/70 uppercase tracking-widest"
 							htmlFor="location"
 						>
-							Location
+							地区
 						</label>
 						<input
 							className="w-full border-np-outline border-b-2 bg-np-surface-lowest px-3 py-2 font-code text-np-secondary placeholder:text-np-on-variant/30 focus:border-np-secondary focus:outline-none"
@@ -130,7 +130,7 @@ function SearchComponent() {
 							className="mb-2 block font-label text-[11px] text-np-primary/70 uppercase tracking-widest"
 							htmlFor="minFollowers"
 						>
-							Min Followers
+							最少关注数
 						</label>
 						<input
 							className="w-full border-np-outline border-b-2 bg-np-surface-lowest px-3 py-2 font-code text-np-secondary placeholder:text-np-on-variant/30 focus:border-np-secondary focus:outline-none"
@@ -148,16 +148,16 @@ function SearchComponent() {
 						type="submit"
 					>
 						<SearchIcon className="size-4" />
-						{loading ? "QUERYING..." : "RUN_QUERY"}
+						{loading ? "搜索中..." : "开始搜索"}
 					</button>
 				</form>
 
 				{loading && (
-					<p className="font-code text-np-on-variant text-sm">QUERYING...</p>
+					<p className="font-code text-np-on-variant text-sm">搜索中...</p>
 				)}
 				{!loading && searched && results.length === 0 && (
 					<p className="font-code text-np-on-variant text-sm">
-						{"NO_MATCH // 无匹配档案。"}
+						{"无匹配 // 无匹配档案。"}
 					</p>
 				)}
 				{!loading && results.length > 0 && (
@@ -193,7 +193,7 @@ function SearchComponent() {
 								<div className="mb-4 space-y-2">
 									<div className="flex justify-between">
 										<span className="font-label text-[11px] text-np-on-variant uppercase">
-											Location
+											地区
 										</span>
 										<span className="truncate font-code text-np-on text-xs">
 											{p.location || "—"}
@@ -201,7 +201,7 @@ function SearchComponent() {
 									</div>
 									<div className="flex justify-between">
 										<span className="font-label text-[11px] text-np-on-variant uppercase">
-											Followers
+											关注者
 										</span>
 										<span className="font-code text-np-on text-xs">
 											{p.followers}
@@ -209,7 +209,7 @@ function SearchComponent() {
 									</div>
 								</div>
 								<div className="flex items-center justify-center gap-1 border border-np-outline-variant py-1 font-label text-[11px] text-np-on-variant uppercase transition-all group-hover:border-np-primary group-hover:text-np-primary">
-									View Full Report
+									查看完整档案
 									<ChevronRight className="size-3" />
 								</div>
 							</Link>

@@ -2,9 +2,9 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { Bell, CornerDownLeft, Terminal } from "lucide-react";
 
 const NAV_ITEMS = [
-	{ label: "TERMINAL", to: "/" },
-	{ label: "LEADERBOARD", to: "/leaderboard" },
-	{ label: "SEARCH", to: "/search" },
+	{ label: "首页", to: "/" },
+	{ label: "排行榜", to: "/leaderboard" },
+	{ label: "搜索", to: "/search" },
 ] as const;
 
 export function NeonHeader({ showReturn = false }: { showReturn?: boolean }) {
@@ -16,7 +16,7 @@ export function NeonHeader({ showReturn = false }: { showReturn?: boolean }) {
 					className="font-display text-np-primary text-xl tracking-tighter"
 					to="/"
 				>
-					GH_COMMAND_CENTER
+					GH 指挥中心
 				</Link>
 				<nav className="hidden gap-6 md:flex">
 					{NAV_ITEMS.map((item) => {
@@ -44,7 +44,7 @@ export function NeonHeader({ showReturn = false }: { showReturn?: boolean }) {
 						to="/"
 					>
 						<CornerDownLeft className="size-4" />
-						RETURN_TO_COMMAND
+						返回首页
 					</Link>
 				)}
 				<Bell className="size-5 text-np-primary" />
