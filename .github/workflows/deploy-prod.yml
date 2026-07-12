@@ -1,5 +1,6 @@
 # production 分支 → 部署 prod 环境。
 # prod 的 GitHub Environment 配 required reviewers → 每个 deploy job 前强制人工审批。
+# 也支持手动触发（workflow_dispatch），用于首次 bootstrap / 强制重部署。
 name: deploy-prod
 
 on:
@@ -10,6 +11,20 @@ on:
       - "bff/**"
       - "frontend/**"
       - ".github/workflows/**"
+  workflow_dispatch:
+    inputs:
+      services:
+        description: "部署两个 Go 服务"
+        type: boolean
+        default: true
+      bff:
+        description: "部署 BFF Lambda"
+        type: boolean
+        default: true
+      frontend:
+        description: "部署前端"
+        type: boolean
+        default: true
 
 permissions:
   id-token: write
@@ -19,13 +34,14 @@ jobs:
   changes:
     runs-on: ubuntu-latest
     outputs:
-      services: ${{ steps.filter.outputs.services }}
-      bff: ${{ steps.filter.outputs.bff }}
-      frontend: ${{ steps.filter.outputs.frontend }}
+      services: ${{ steps.decide.outputs.services }}
+      bff: ${{ steps.decide.outputs.bff }}
+      frontend: ${{ steps.decide.outputs.frontend }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
         id: filter
+        if: github.event_name == 'push'
         with:
           filters: |
             services:
@@ -34,6 +50,17 @@ jobs:
               - 'bff/**'
             frontend:
               - 'frontend/**'
+      - id: decide
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "services=${{ inputs.services }}" >> "$GITHUB_OUTPUT"
+            echo "bff=${{ inputs.bff }}" >> "$GITHUB_OUTPUT"
+            echo "frontend=${{ inputs.frontend }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "services=${{ steps.filter.outputs.services }}" >> "$GITHUB_OUTPUT"
+            echo "bff=${{ steps.filter.outputs.bff }}" >> "$GITHUB_OUTPUT"
+            echo "frontend=${{ steps.filter.outputs.frontend }}" >> "$GITHUB_OUTPUT"
+          fi
 
   deploy:
     needs: changes

@@ -1,4 +1,5 @@
 # main 分支 → 自动部署 test 环境。按路径分流：只部署实际改动的那块。
+# 也支持手动触发（workflow_dispatch）：勾选哪块就全量部署哪块，用于首次 bootstrap / 强制重部署。
 name: deploy-test
 
 on:
@@ -9,6 +10,20 @@ on:
       - "bff/**"
       - "frontend/**"
       - ".github/workflows/**"
+  workflow_dispatch:
+    inputs:
+      services:
+        description: "部署两个 Go 服务"
+        type: boolean
+        default: true
+      bff:
+        description: "部署 BFF Lambda"
+        type: boolean
+        default: true
+      frontend:
+        description: "部署前端"
+        type: boolean
+        default: true
 
 permissions:
   id-token: write
@@ -18,13 +33,14 @@ jobs:
   changes:
     runs-on: ubuntu-latest
     outputs:
-      services: ${{ steps.filter.outputs.services }}
-      bff: ${{ steps.filter.outputs.bff }}
-      frontend: ${{ steps.filter.outputs.frontend }}
+      services: ${{ steps.decide.outputs.services }}
+      bff: ${{ steps.decide.outputs.bff }}
+      frontend: ${{ steps.decide.outputs.frontend }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
         id: filter
+        if: github.event_name == 'push'
         with:
           filters: |
             services:
@@ -33,6 +49,18 @@ jobs:
               - 'bff/**'
             frontend:
               - 'frontend/**'
+      - id: decide
+        # push：按路径过滤结果；手动触发：按勾选的 inputs
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "services=${{ inputs.services }}" >> "$GITHUB_OUTPUT"
+            echo "bff=${{ inputs.bff }}" >> "$GITHUB_OUTPUT"
+            echo "frontend=${{ inputs.frontend }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "services=${{ steps.filter.outputs.services }}" >> "$GITHUB_OUTPUT"
+            echo "bff=${{ steps.filter.outputs.bff }}" >> "$GITHUB_OUTPUT"
+            echo "frontend=${{ steps.filter.outputs.frontend }}" >> "$GITHUB_OUTPUT"
+          fi
 
   deploy:
     needs: changes
