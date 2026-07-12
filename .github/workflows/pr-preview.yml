@@ -63,6 +63,11 @@ jobs:
       - name: Sync to preview prefix
         run: |
           aws s3 sync frontend/apps/web/dist "s3://${{ vars.FRONTEND_BUCKET }}/pr-${PR}/" --delete
+      - name: Invalidate preview path
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${{ vars.CLOUDFRONT_ID }}" \
+            --paths "/pr-${PR}/*"
       - name: Comment preview URL
         env:
           GH_TOKEN: ${{ github.token }}
