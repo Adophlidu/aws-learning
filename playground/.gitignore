@@ -1,8 +1,0 @@
-# Node
-node_modules/
-backend/function.zip
-# frontend
-frontend/dist/
-frontend/.env*
-# OS
-.DS_Store

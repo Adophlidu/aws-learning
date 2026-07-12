@@ -4,8 +4,8 @@ on:
   push:
     branches: [main]
     paths:
-      - "playground/backend/**"
-      - "playground/frontend/**"
+      - "backend/**"
+      - "frontend/**"
       - ".github/workflows/deploy.yml"
 
 permissions:
@@ -33,7 +33,7 @@ jobs:
         with:
           node-version: 22
       - name: Package lambda
-        working-directory: playground/backend
+        working-directory: backend
         run: |
           npm ci --omit=dev
           zip -r function.zip handler.js mapper.js node_modules package.json
@@ -41,7 +41,7 @@ jobs:
         run: |
           aws lambda update-function-code \
             --function-name "$LAMBDA_FUNCTION" \
-            --zip-file fileb://playground/backend/function.zip
+            --zip-file fileb://backend/function.zip
 
   frontend:
     runs-on: ubuntu-latest
@@ -53,20 +53,20 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
       - uses: pnpm/action-setup@v4
         with:
-          package_json_file: playground/frontend/package.json
+          package_json_file: frontend/package.json
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: pnpm
-          cache-dependency-path: playground/frontend/pnpm-lock.yaml
+          cache-dependency-path: frontend/pnpm-lock.yaml
       - name: Build web
-        working-directory: playground/frontend
+        working-directory: frontend
         run: |
           pnpm install --frozen-lockfile
           pnpm -F web build
       - name: Sync to S3
         run: |
-          aws s3 sync playground/frontend/apps/web/dist "s3://$S3_BUCKET" --delete
+          aws s3 sync frontend/apps/web/dist "s3://$S3_BUCKET" --delete
       - name: Invalidate CloudFront
         run: |
           aws cloudfront create-invalidation \

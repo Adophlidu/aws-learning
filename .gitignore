@@ -1,8 +1,8 @@
 # Node
-playground/node_modules/
-playground/backend/function.zip
+node_modules/
+backend/function.zip
 # frontend
-playground/frontend/dist/
-playground/frontend/.env*
+frontend/dist/
+frontend/.env*
 # OS
 .DS_Store
