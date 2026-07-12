@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { NeonHeader } from "@/components/neon-header";
-import { listProfiles, type ProfileSummary, submitToken } from "@/lib/api";
+import { listProfiles, type Profile, submitToken } from "@/lib/api";
 
 export const Route = createFileRoute("/")({
 	component: HomeComponent,
@@ -13,7 +13,7 @@ export const Route = createFileRoute("/")({
 function HomeComponent() {
 	const [token, setToken] = useState("");
 	const [submitting, setSubmitting] = useState(false);
-	const [profiles, setProfiles] = useState<ProfileSummary[]>([]);
+	const [profiles, setProfiles] = useState<Profile[]>([]);
 	const [loading, setLoading] = useState(true);
 
 	const refresh = useCallback(async () => {
@@ -164,7 +164,7 @@ function HomeComponent() {
 												@{p.login}
 											</div>
 											<div className="truncate text-np-on-variant text-sm">
-												{p.name ?? "—"}
+												{p.name || "—"}
 											</div>
 										</div>
 									</div>

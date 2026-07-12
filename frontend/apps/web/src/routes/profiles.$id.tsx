@@ -2,15 +2,24 @@ import { createFileRoute } from "@tanstack/react-router";
 import {
 	Building2,
 	Calendar,
-	Clock,
+	Code2,
+	FolderGit2,
 	Hash,
 	MapPin,
+	Star,
 	UserCheck,
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
 import { NeonHeader } from "@/components/neon-header";
-import { getProfile, type ProfileDetail } from "@/lib/api";
+import {
+	getProfile,
+	getRepos,
+	getStats,
+	type LangStat,
+	type Profile,
+	type RepoStat,
+} from "@/lib/api";
 
 export const Route = createFileRoute("/profiles/$id")({
 	component: DetailComponent,
@@ -18,7 +27,7 @@ export const Route = createFileRoute("/profiles/$id")({
 
 const FRACTION_RE = /\.\d+Z?$/;
 
-function formatDate(value: string | null): string {
+function formatDate(value: string): string {
 	if (!value) {
 		return "—";
 	}
@@ -31,7 +40,9 @@ const STAT_VALUE = "font-display font-bold text-3xl text-np-primary";
 
 function DetailComponent() {
 	const { id } = Route.useParams();
-	const [profile, setProfile] = useState<ProfileDetail | null>(null);
+	const [profile, setProfile] = useState<Profile | null>(null);
+	const [stats, setStats] = useState<LangStat[]>([]);
+	const [repos, setRepos] = useState<RepoStat[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 
@@ -39,7 +50,15 @@ function DetailComponent() {
 		setLoading(true);
 		setError(null);
 		try {
-			setProfile(await getProfile(id));
+			const p = await getProfile(id);
+			setProfile(p);
+			// 语言统计 / 仓库来自 stats-service，失败不阻断 profile 展示
+			const [s, r] = await Promise.all([
+				getStats(p.github_id).catch(() => [] as LangStat[]),
+				getRepos(p.github_id).catch(() => [] as RepoStat[]),
+			]);
+			setStats(s);
+			setRepos(r);
 		} catch (e) {
 			setError(e instanceof Error ? e.message : "加载失败");
 		} finally {
@@ -93,10 +112,10 @@ function DetailComponent() {
 								<div className="flex-1 space-y-4 text-center lg:text-left">
 									<div>
 										<h1 className="mb-2 font-display font-extrabold text-5xl text-np-primary leading-none">
-											{profile.name ?? profile.login}
+											{profile.name || profile.login}
 										</h1>
 										<p className="max-w-2xl text-np-on-variant">
-											{profile.bio ?? "No bio on record."}
+											{profile.bio || "No bio on record."}
 										</p>
 									</div>
 									<div className="grid grid-cols-1 gap-4 pt-4 sm:grid-cols-3">
@@ -117,6 +136,10 @@ function DetailComponent() {
 							</div>
 						</section>
 
+						<LanguageStats stats={stats} />
+
+						<RepoTable repos={repos} />
+
 						<section className="space-y-6">
 							<div className="flex items-center justify-between border-np-outline-variant border-b pb-2">
 								<h2 className="flex items-center gap-2 font-display text-np-secondary text-xl">
@@ -128,12 +151,12 @@ function DetailComponent() {
 								<MetaPacket
 									icon={<Building2 className="size-4" />}
 									label="Company"
-									value={profile.company ?? "—"}
+									value={profile.company || "—"}
 								/>
 								<MetaPacket
 									icon={<MapPin className="size-4" />}
 									label="Location"
-									value={profile.location ?? "—"}
+									value={profile.location || "—"}
 								/>
 								<MetaPacket
 									icon={<Calendar className="size-4" />}
@@ -145,17 +168,105 @@ function DetailComponent() {
 									label="GitHub ID"
 									value={String(profile.github_id)}
 								/>
-								<MetaPacket
-									icon={<Clock className="size-4" />}
-									label="Archived At"
-									value={formatDate(profile.stored_at)}
-								/>
 							</div>
 						</section>
 					</div>
 				)}
 			</main>
 		</>
+	);
+}
+
+// 语言分布：按 star_sum 归一化占比条
+function LanguageStats({ stats }: { stats: LangStat[] }) {
+	const maxStars = stats.reduce((m, s) => Math.max(m, s.star_sum), 0);
+	return (
+		<section className="space-y-6">
+			<div className="flex items-center justify-between border-np-outline-variant border-b pb-2">
+				<h2 className="flex items-center gap-2 font-display text-np-secondary text-xl">
+					<Code2 className="size-5" />
+					LANGUAGE_DISTRIBUTION
+				</h2>
+				<span className="font-label text-[11px] text-np-on-variant uppercase">
+					{stats.length} LANGS
+				</span>
+			</div>
+			{stats.length === 0 ? (
+				<p className="font-code text-np-on-variant text-sm">
+					{"NO_STATS // 该用户仓库未采集或无语言信息。"}
+				</p>
+			) : (
+				<div className="space-y-3">
+					{stats.map((s) => (
+						<div
+							className="border border-np-outline-variant bg-np-surface-low p-4"
+							key={s.language}
+						>
+							<div className="mb-2 flex items-center justify-between">
+								<span className="font-code text-np-secondary text-sm">
+									{s.language}
+								</span>
+								<span className="font-label text-[11px] text-np-on-variant uppercase">
+									{s.repo_count} repos · {s.star_sum} ★
+								</span>
+							</div>
+							<div className="h-1.5 w-full bg-np-surface-highest">
+								<div
+									className="h-full bg-np-primary"
+									style={{
+										width: `${maxStars > 0 ? (s.star_sum / maxStars) * 100 : 0}%`,
+									}}
+								/>
+							</div>
+						</div>
+					))}
+				</div>
+			)}
+		</section>
+	);
+}
+
+// 仓库列表：按 star 降序
+function RepoTable({ repos }: { repos: RepoStat[] }) {
+	return (
+		<section className="space-y-6">
+			<div className="flex items-center justify-between border-np-outline-variant border-b pb-2">
+				<h2 className="flex items-center gap-2 font-display text-np-secondary text-xl">
+					<FolderGit2 className="size-5" />
+					TOP_REPOSITORIES
+				</h2>
+				<span className="font-label text-[11px] text-np-on-variant uppercase">
+					{repos.length} REPOS
+				</span>
+			</div>
+			{repos.length === 0 ? (
+				<p className="font-code text-np-on-variant text-sm">
+					{"NO_REPOS // 无已采集仓库。"}
+				</p>
+			) : (
+				<div className="divide-y divide-np-outline-variant border border-np-outline-variant">
+					{repos.map((r) => (
+						<div
+							className="flex items-center justify-between gap-4 bg-np-surface-low px-4 py-3 transition-colors hover:bg-np-surface-high"
+							key={r.repo_name}
+						>
+							<div className="min-w-0 flex-1">
+								<div className="truncate font-code text-np-on text-sm">
+									{r.repo_name}
+								</div>
+								<div className="font-label text-[11px] text-np-on-variant uppercase">
+									{r.language || "—"} · {formatDate(r.updated_at)}
+								</div>
+							</div>
+							<div className="flex items-center gap-1 font-code text-np-primary text-sm">
+								<Star className="size-3.5" />
+								{r.stargazers_count}
+							</div>
+						</div>
+					))}
+				</div>
+			)}
+		</section>
 	);
 }
 
