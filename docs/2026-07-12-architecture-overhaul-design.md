@@ -182,8 +182,8 @@ on: PR closed     → 清理 pr-N/ 前缀
 
 ## 8. 实施阶段（供实现计划展开）
 
-> **进度（截至 2026-07-12）**：✅ Plan 1 基础设施（specs/2026-07-12-phase1-infra-plan.md，已 apply/验证/destroy）｜✅ Plan 2 profile-service+BFF+APIGW 南北向（phase2 plan，端到端通电验证过）｜✅ Plan 3 stats-service+Cloud Map 东西向（phase3 plan，榜单跨服务验证过）｜✅ Plan 4 前端新页面（phase4 plan，语言统计/仓库/榜单/搜索，`pnpm -F web build` 通过，commit 68de66e）｜⬜ **下一步 Plan 5 CI/CD**（双分支/prod 审批/PR 前端预览/自动迁移）。
-> 恢复执行：说"继续 Plan 5"即可；设计阶段 2+3 已合并进 Plan 2 实施。Plan 4 纯前端本地代码，未部署（真机联调随 Plan 5 上 S3+CloudFront）。
+> **进度（截至 2026-07-12）— 🎉 全部 Plan 完成**：✅ Plan 1 基础设施（phase1 plan，已 apply/验证/destroy）｜✅ Plan 2 profile-service+BFF+APIGW 南北向（phase2，端到端验证）｜✅ Plan 3 stats-service+Cloud Map 东西向（phase3，榜单跨服务验证）｜✅ Plan 4 前端新页面（phase4，语言统计/仓库/榜单/搜索，build 通过，commit 68de66e）｜✅ Plan 5 CI/CD（phase5 plan + `docs/2026-07-12-cicd-setup.md` runbook，双环境/prod 审批/PR 预览，terraform validate + YAML 校验通过，commit 138c21f）。
+> **落地待办（手动，属你的 AWS/GitHub 操作）**：按 `docs/2026-07-12-cicd-setup.md` 建 production 分支、apply 两套 workspace、配 GitHub Environments(test/prod)+prod 审批人+各环境 Variables，push 即联调。DB 迁移沿用启动幂等 DDL；golang-migrate 作为生产路径记录在 runbook。
 
 1. **基础设施基线（Terraform）**：network、私网 RDS、ECR×2、ALB、Cloud Map、ECS 集群、OIDC/IAM。
 2. **profile-service(Go)**：把现有 profile CRUD + 搜索移植为 Go 服务，跑 Fargate、挂 ALB；RDS 私网化；Lambda 改为经 ALB 调它。
