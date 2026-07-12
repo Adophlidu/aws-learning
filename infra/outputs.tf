@@ -1,0 +1,10 @@
+output "vpc_id" { value = aws_vpc.main.id }
+output "private_subnet_ids" { value = aws_subnet.private[*].id }
+output "alb_dns_name" { value = aws_lb.main.dns_name }
+output "rds_endpoint" { value = aws_db_instance.main.address }
+output "ecr_profile_url" { value = aws_ecr_repository.profile.repository_url }
+output "ecr_stats_url" { value = aws_ecr_repository.stats.repository_url }
+output "cloudmap_namespace_id" { value = aws_service_discovery_private_dns_namespace.main.id }
+output "ecs_cluster_name" { value = aws_ecs_cluster.main.name }
+output "deploy_role_arn" { value = aws_iam_role.deploy.arn }
+output "db_secret_arn" { value = aws_secretsmanager_secret.db.arn }
